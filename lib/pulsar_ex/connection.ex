@@ -281,7 +281,7 @@ defmodule PulsarEx.Connection do
         } = state
       ) do
     with {:ok, socket} <- do_connect(host, port, cluster_opts),
-         {:ok, max_message_size} <- do_handshake(socket) do
+         {:ok, max_message_size} <- do_handshake(socket, cluster_opts) do
       :inet.setopts(socket, active: true)
       Process.send_after(self(), :send_ping, @ping_interval)
 
@@ -1912,12 +1912,15 @@ defmodule PulsarEx.Connection do
     :gen_tcp.connect(to_charlist(host), port, socket_opts, connection_timeout)
   end
 
-  defp do_handshake(socket) do
+  defp do_handshake(socket, cluster_opts) do
+    auth_token = Keyword.get(cluster_opts, :auth_token)
+
     command =
       CommandConnect.new(
         client_version: @client_version,
         protocol_version: @protocol_version
       )
+      |> maybe_add_auth_token(auth_token)
 
     with :ok <- :gen_tcp.send(socket, encode_command(command)),
          {:ok, data} <- :gen_tcp.recv(socket, 0),
@@ -1927,6 +1930,22 @@ defmodule PulsarEx.Connection do
       _ ->
         {:error, :handshake}
     end
+  end
+
+  defp maybe_add_auth_token(command, nil), do: command
+  defp maybe_add_auth_token(command, auth_token) do
+    auth_data =
+      if is_binary(auth_token) do
+        auth_token
+      else
+        to_string(auth_token)
+      end
+
+    %{command |
+      auth_method: :AuthMethodToken,
+      auth_method_name: "token",
+      auth_data: auth_data
+    }
   end
 
   defp optimize_socket_opts(socket_opts) do

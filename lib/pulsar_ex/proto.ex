@@ -57,6 +57,7 @@ defmodule PulsarEx.Proto.AuthMethod do
   field :AuthMethodNone, 0
   field :AuthMethodYcaV1, 1
   field :AuthMethodAthens, 2
+  field :AuthMethodToken, 3
 end
 
 defmodule PulsarEx.Proto.ProtocolVersion do

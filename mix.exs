@@ -5,7 +5,7 @@ defmodule PulsarEx.MixProject do
     [
       name: "PulsarEx",
       app: :pulsar_ex,
-      version: "0.14.1",
+      version: "0.14.2",
       elixir: "~> 1.15.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
@@ -14,7 +14,7 @@ defmodule PulsarEx.MixProject do
       test_paths: test_paths(Mix.env()),
       aliases: aliases(),
       package: package(),
-      source_url: "https://github.com/blueshift-labs/pulsar_ex",
+      source_url: "https://github.com/thibaultlambermont/pulsar_ex",
       docs: [
         main: "PulsarEx",
         extras: ["README.md"]

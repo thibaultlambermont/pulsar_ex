@@ -233,6 +233,7 @@ enum AuthMethod {
     AuthMethodNone   = 0;
     AuthMethodYcaV1  = 1;
     AuthMethodAthens = 2;
+    AuthMethodToken  = 3;
 }
 
 // Each protocol version identify new features that are
